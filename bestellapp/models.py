@@ -27,7 +27,18 @@ class Menue(models.Model):
         verbose_name = "Menü"
         verbose_name_plural = "Menüs"
 
-    
+    @property
+    def get_sum(self):
+        lst_best = Order.objects.filter(menu=self, activ=True)
+        sum = 0
+        for element in lst_best:
+            sum += element.anzahl
+        return sum
+    @property
+    def get_count(self):
+        lst_best = Order.objects.filter(menu=self, activ=True)
+        return len(lst_best)
+
     def __str__(self):
         return f"{self.date}/{self.art.short}"
 
@@ -49,15 +60,16 @@ class Team(models.Model):
         return reverse("Team_detail", kwargs={"pk": self.pk})
     
 class Order(models.Model):
-    team = models.ForeignKey(Team, verbose_name="Gruppe", on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, verbose_name="Team", on_delete=models.CASCADE)
     menu = models.ForeignKey(Menue, verbose_name="Menü", on_delete=models.CASCADE)
     anzahl = models.IntegerField("Anzahl")
     date_order = models.DateField("Zeitpunkt der Bestellung", auto_now=False, auto_now_add=True)
+    activ = models.BooleanField("Bestellung aktiv", default=True)
 
     class Meta:
         verbose_name = "Bestellung"
         verbose_name_plural = "Bestellung"
-        ordering = ['-date_order', 'menue']
+        ordering = ['-date_order', 'menu']
 
     def __str__(self):
         return f"{self.menu}/{self.team} - {self.anzahl}"
