@@ -48,6 +48,7 @@ class Menue(models.Model):
 class Team(models.Model):
     name = models.CharField("Name", max_length=50)
     description = models.TextField("Beschreibung", blank=True, null=True)
+    groesse = models.IntegerField("Gruppengröße")
 
     class Meta:
         verbose_name = "Team"
